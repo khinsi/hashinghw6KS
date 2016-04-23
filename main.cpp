@@ -175,14 +175,14 @@ void mergesort(int *a, int low, int high)
 
 
 
-bool filearray(string file_name, int *& numbers)
+bool filearray(string file_name, int *& numbers) // function to convert each file into an array. 
 {
-    ifstream in;
-    in.open (file_name.c_str());
+    ifstream in; 
+    in.open (file_name.c_str()); 
     
-    if(in.fail () )
+    if(in.fail () ) //if it fails to open
     {
-        cerr<< " Error opening file" <<endl;
+        cerr<< " Error opening file" <<endl; //write out error to the console. 
     }
     string temp;
     string file_content="";
@@ -194,13 +194,13 @@ bool filearray(string file_name, int *& numbers)
     in.clear();
     in.close();
     
-    vector<string> lines;
+    vector<string> lines; //make vector for store file content. 
     temp= "";
     for( int i = 0; i < file_content.length();i++)
     {
         if (file_content[i] == ' ')
         {
-            lines.push_back(temp);
+            lines.push_back(temp); //push the words onto the vector. 
             temp= "";
         }
         else
@@ -222,21 +222,21 @@ bool filearray(string file_name, int *& numbers)
 
 int main(int argc, const char * argv[])
 {
-    int * allNums;
-    string fileNames[4];
-    fileNames[0] = "FewUnique.txt";
+    int * allNums;  //create pointer to store all of the numbers. 
+    string fileNames[4];  //this array will index the different files.
+    fileNames[0] = "FewUnique.txt"; 
     fileNames[1] = "NearlySorted.txt";
     fileNames[2] = "Random.txt";
     fileNames[3] = "Reversed.txt";
     //int * test=file_to_array("Random.txt");
     
-    for(int i= 0;i<4; i++)
+    for(int i= 0;i<4; i++) // for loop to go through the files and then apply each functions 
     {
         filearray(fileNames[i],allNums);
          bubblesort (allNums,10000);
         
-         cout << compare << endl;
-         cout << exchanges << endl;
+         cout << compare << endl; //write out the compares 
+         cout << exchanges << endl; //write out the exchanges. 
         cout<<"---------------"<<endl;
         
         filearray (fileNames[i],allNums);
