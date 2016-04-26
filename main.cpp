@@ -17,36 +17,24 @@ using namespace std;
 
 
 int extraction_method(int key);
-int quadratic_prob (int *& Hashtable, int key, int Max);
+int quadratic_prob (int *& Hashtable, int key, int Max,int usernum);
 
 
 int extraction_method(int key )
 {
     
     string text = to_string (key);  //convert int key into string.
-    string one ;
-    one= text [2]; //extract the string index
-    string two;
-    two = text[4]; //extract the string index
-    string three ;
-    three = text[6];
-    string four;
-    four = text [7];
-    
-    string all = one + two + three + four;  //combine all of the strings
-    int hashkey = stoi (all); //convert into an int.
-    
-    return hashkey; //return int
+    return text [3] + text [5] + text [7] + text [8]; //return the index as instructed.
 }
 
-int quadratic_prob (int *& Hashtable, int key, int Max)
+int quadratic_prob (int *& Hashtable, int key, int Max, int usernum)
 {
     int pos;
-    int i;
+    
     pos = extraction_method(key);  //position will be extraction method returned key.
-    for (i = 0 ; i % Max != pos ; i++)
+    for (int i =usernum ; i % Max != pos ; i++)
     {
-        pos = (pos + i *i) % Max;
+        pos = (pos + i * i ) % Max;
         if (Hashtable[pos]  == 0)//empty slot
         {
             Hashtable [pos] = key;
@@ -76,13 +64,10 @@ int main()
         i++;
         
     }
-    //for (int j = 0 ; j < i_vector.size() ; j++)  //put each word in vector
-    //{
-    //    cout<<i_vector [j] <<endl; //testing vector output.
-    //}
     
-    //----------------------------------------------------------------------------------//
-    
+    int usernum;
+    cout <<"Enter a number between 0 and 450 million: "<<endl; //prompt user to enter in number which will be used as "i" in quadratic probing.
+    cin>>usernum;
     int index ;
     
     int M = 500;
@@ -101,13 +86,13 @@ int main()
         {
             //cout << "COLLISION! Fear not... I'll resolve it!\n"; //if the space is already taken , we will do quadratic probing to move it.
             
-            quadratic_prob (hash_table , i_vector [i], M); //call the quadratic probing function.
+            quadratic_prob (hash_table , i_vector [i], M,usernum ); //call the quadratic probing function.
         }
     }
     out.open("hashed_socials.txt"); //open up output file.
     for (int k = 0 ; k< 500; k++)  //writing out the hashtable onto console.
     {
-        cout<<hash_table[k]<<",";
+        cout<<hash_table[k]<<endl;
         out<<hash_table [k]<<","; //writing the hashtable into output textfile.
         
     }
