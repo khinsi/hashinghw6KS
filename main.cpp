@@ -1,266 +1,120 @@
 //
 //  main.cpp
-//  hw5
+//  hashing hw6
 //
-//  Created by Khin Yatana on 4/18/16.
+//  Created by Khin Yatana on 4/23/16.
 //  Copyright © 2016 Khin Yatana. All rights reserved.
 //
 
 #include <iostream>
+#include <string>
 #include <fstream>
 #include <vector>
-#include <string>
-#include <cstdlib>
-
-
-
+#include <cstring>
+#include <queue>
+#include <stdlib.h>
 using namespace std;
 
-void bubblesort (int A[], int n);
-void insertionsort(int A[], int n);
-void selectionsort (int A[] , int n );
-void shellsort(int A[], int n);
-void merge (int *a, int low, int high , int mid );
-void mergesort (int *a , int  low, int high );
 
-int compare = 0;
-int exchanges = 0 ;
+int extraction_method(int key);
+int quadratic_prob (int *& Hashtable, int key, int Max);
 
 
-void bubblesort (int A[], int n)
+int extraction_method(int key )
 {
-    int i, j, temp;
-    for(i = 1; i < n; i++)
-    {
-        for(j = 0; j < n - 1; j++)
-        {
-            compare++;
-            if(A[j] > A[j + 1])
-            {
-                temp = A[j];
-                A[j] = A[j + 1];
-                A[j + 1] = temp;
-                exchanges++;
-            }
-        }
-    }
     
-}
-void insertionsort(int A[], int n)
-{
-    int i, j, element;
-    for(i = 1; i < n; i++)
-    {
-        element = A[i];
-        j = i;
-        compare++;
-        while ((j > 0) && (A[j - 1] > element))
-        {
-            A[j] = A[j - 1];
-            j = j - 1;
-            exchanges++;
-        }
-        A[j] = element;
-    }
+    string text = to_string (key);  //convert int key into string.
+    string one ;
+    one= text [2]; //extract the string index
+    string two;
+    two = text[4]; //extract the string index
+    string three ;
+    three = text[6];
+    string four;
+    four = text [7];
     
+    string all = one + two + three + four;  //combine all of the strings
+    int hashkey = stoi (all); //convert into an int.
+    
+    return hashkey; //return int
 }
-void selectionsort (int A[] , int n )
+
+int quadratic_prob (int *& Hashtable, int key, int Max)
 {
-    int i ;
-    int j;
-    int minpos=0;
-    int temp;
-    for (i = 0 ; i< n -1; i++)
+    int pos;
+    int i;
+    pos = extraction_method(key);  //position will be extraction method returned key.
+    for (i = 0 ; i % Max != pos ; i++)
     {
-        compare++;
-        if ( A[j] < A [minpos] )  //compare
+        pos = (pos + i *i) % Max;
+        if (Hashtable[pos]  == 0)//empty slot
         {
-            minpos = j ;
+            Hashtable [pos] = key;
+            return pos;
             
         }
-        if (minpos != i )
-        {
-            temp = A[i];
-            A[i] = A[minpos]; //swap the ith element and minpos element.
-            A[minpos] = temp;
-            exchanges++;
-        }
-    }
+    } //table overflow
+    return -1;
 }
 
-void shellsort(int A[], int n)
+
+int main()
 {
-    int temp, gap, i;
-    int swapped;
-    gap = n/2;
-    do
-    {
-        do
-        {
-            swapped = 0;
-            for(i = 0; i < n - gap; i++)
-            {
-                compare++;
-                if(A[i] > A[i + gap])
-                {
-                    exchanges++;
-                    temp = A[i];
-                    A[i] = A[i + gap];
-                    A[i + gap] = temp;
-                    swapped = 1;
-                }
-            }
-        }
-        while(swapped == 1);
-    }
-    while((gap = gap/2) >= 1);
+    ifstream in;
+    ofstream out;
+    in.open ("socials.txt");
+    string line; //will have words/ints from the file
+    int number ;
+    vector <int> i_vector;
+    int i = 0;
     
-}
-
-void merge(int *a, int low, int high, int mid)
-{
-    int i, j, k, c[10000];
-    i = low;
-    k = low;
-    j = mid + 1;
-    while (i <= mid && j <= high)
+    while (!in.eof () )
     {
-        compare++;
-        if (a[i] < a[j])
-        {
-            c[k] = a[i];
-            k++;
-            i++;
-            compare++;
-            exchanges++;
-        }
-        else
-        {
-            c[k] = a[j];
-            k++;
-            j++;
-            exchanges++;
-        }
-    }
-    while (i <= mid)
-    {
-        c[k] = a[i];
-        k++;
+        getline (in,line, ','); //read in & store in "line";
+        number = stoi (line);  //string to int.
+        i_vector.push_back(number); //store in vector.
         i++;
+        
     }
-    while (j <= high)
-    {
-        c[k] = a[j];
-        k++;
-        j++;
-    }
-    for (i = low; i < k; i++)
-    {
-        a[i] = c[i];
-    }
-}
-
-void mergesort(int *a, int low, int high)
-{
-    int mid;
-    if (low < high)
-    {
-        mid=(low+high)/2;
-        mergesort(a,low,mid);
-        mergesort(a,mid+1,high);
-        merge(a,low,high,mid);
-    }
-    return;
-}
-
-
-
-bool filearray(string file_name, int *& numbers) // function to convert each file into an array. 
-{
-    ifstream in; 
-    in.open (file_name.c_str()); 
+    //for (int j = 0 ; j < i_vector.size() ; j++)  //put each word in vector
+    //{
+    //    cout<<i_vector [j] <<endl; //testing vector output.
+    //}
     
-    if(in.fail () ) //if it fails to open
-    {
-        cerr<< " Error opening file" <<endl; //write out error to the console. 
-    }
-    string temp;
-    string file_content="";
-    while(in.peek()!=EOF)
-    {
-        in>>temp;
-        file_content += temp + " ";
-    }
-    in.clear();
-    in.close();
+    //----------------------------------------------------------------------------------//
     
-    vector<string> lines; //make vector for store file content. 
-    temp= "";
-    for( int i = 0; i < file_content.length();i++)
+    int index ;
+    
+    int M = 500;
+    int *hash_table= new int [500];
+    for(int i=0;i<M;i++)    //initialize the hash table to contain 0s
+        hash_table[i]=0;
+    
+    for(int i=0;i<M;i++)    //hash the elements in array_of_numbers into the hash_table
     {
-        if (file_content[i] == ' ')
-        {
-            lines.push_back(temp); //push the words onto the vector. 
-            temp= "";
-        }
+        index= extraction_method (i_vector[i]);
+        
+        if(hash_table[index]==0) //if the hashed number index is 0 do the following:
+            hash_table[index]=i_vector [i]; //hashed number index within hashtable equals the number in the vector.
+        
         else
         {
-            temp +=file_content[i];
+            //cout << "COLLISION! Fear not... I'll resolve it!\n"; //if the space is already taken , we will do quadratic probing to move it.
+            
+            quadratic_prob (hash_table , i_vector [i], M); //call the quadratic probing function.
         }
     }
-    if(numbers!=NULL) delete numbers;
-    numbers = new int[lines.size()];
-    for(int i=0; i<lines.size(); i++)
+    out.open("hashed_socials.txt"); //open up output file.
+    for (int k = 0 ; k< 500; k++)  //writing out the hashtable onto console.
     {
-        numbers[i]= atoi(lines[i].c_str());
-    }
-    return true;
-}
-
-
-
-
-int main(int argc, const char * argv[])
-{
-    int * allNums;  //create pointer to store all of the numbers. 
-    string fileNames[4];  //this array will index the different files.
-    fileNames[0] = "FewUnique.txt"; 
-    fileNames[1] = "NearlySorted.txt";
-    fileNames[2] = "Random.txt";
-    fileNames[3] = "Reversed.txt";
-    //int * test=file_to_array("Random.txt");
-    
-    for(int i= 0;i<4; i++) // for loop to go through the files and then apply each functions 
-    {
-        filearray(fileNames[i],allNums);
-         bubblesort (allNums,10000);
-        
-         cout << compare << endl; //write out the compares 
-         cout << exchanges << endl; //write out the exchanges. 
-        cout<<"---------------"<<endl;
-        
-        filearray (fileNames[i],allNums);
-        insertionsort(allNums,10000);
-        cout << compare << endl;
-        cout << exchanges << endl;
-        
-      
-        
-        filearray(fileNames[i], allNums);
-        selectionsort (allNums,10000);
-         cout << compare << endl;
-         cout << exchanges << endl;
-        
-        filearray(fileNames[i],allNums);
-         shellsort(allNums,10000);
-         cout << compare << endl;
-         cout << exchanges << endl;
-        
-        filearray(fileNames[i],allNums);
-         mergesort(allNums,0,10000);
-         cout << compare << endl;
-         cout << exchanges << endl;
+        cout<<hash_table[k]<<",";
+        out<<hash_table [k]<<","; //writing the hashtable into output textfile.
         
     }
     
+    
+    
+    in.clear(); in.close ();
+    out.clear (); out.close();
+    delete[] hash_table;
 }
